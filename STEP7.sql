@@ -35,7 +35,7 @@ FROM
 JOIN
     `orders`
 ON
-    user.id = oders.user_id;
+    users.id = orders.user_id;
 
 --設問6
 SELECT
@@ -52,16 +52,16 @@ ON
 
 --設問7
 SELECT
-    `users`. `id` AS 'ユーザー名',
+    users.name AS 'ユーザー名',
     COUNT(`orders`. `id`) AS '注文件数'
 FROM
-    `users`
+    users
 JOIN
-    `orders`
+    orders
 ON
-    `users`. `id` = `orders`. `user_id`
+    users.id = orders.user_id
 GROUP BY
-    `users`. `id`;
+    users.id, users.name;
 
 --設問8
 SELECT
@@ -193,7 +193,7 @@ ON
 
 --設問15
 SELECT
-    products.product_name AS '商品名',
+    products.product_name AS '商品名'
 FROM
     products
 JOIN
@@ -288,7 +288,7 @@ VALUES
 INSERT INTO
     order_items (id, order_id, product_id, quantity)
 VALUES
-    (11, 1, 6, 1);
+    (11, 10, 6, 1);
 
 --設問25
 UPDATE
