@@ -18,7 +18,7 @@ SELECT
 FROM
     `users`
 WHERE
-    `age` > 30 AND `gender` = 'female';
+    `age` < 30 AND `gender` = 'female';
 
 --設問4
 SELECT
@@ -29,18 +29,20 @@ FROM
 --設問5
 SELECT
     `name` AS 'ユーザー名',
-    `order_date` AS '注文日',
+    `order_date` AS '注文日'
 FROM
     `users`
 JOIN
-    `orders`;
+    `orders`
+ON
+    user.id = oders.user_id;
 
 --設問6
 SELECT
-    `product_name.name` AS '商品名',
+    `products.product_name` AS '商品名',
     `order_items.quantity` AS '数量',
     `products.price` AS '単価',
-    `product.price` * `order_items.quantity` AS '金額'
+    `products.price` * `order_items.quantity` AS '金額'
 FROM
     `order_items`
 JOIN
@@ -51,7 +53,7 @@ ON
 --設問7
 SELECT
     `users`. `id` AS 'ユーザー名',
-    COUNT(`oders`. `id`) AS '注文件数'
+    COUNT(`orders`. `id`) AS '注文件数'
 FROM
     `users`
 JOIN
@@ -103,7 +105,7 @@ ON
 GROUP BY
     users.id, users.name
 ORDER BY
-    '注文金額' DESC
+    MAX(products.price * order_items.quantity) DESC
 LIMIT 1;
 
 --設問10
@@ -119,7 +121,7 @@ ON
 GROUP BY
     products.id, products.product_name
 ORDER BY
-    '注文回数' DESC;
+    COUNT(order_items.id) DESC;
 
 --設問11
 SELECT
@@ -149,7 +151,7 @@ HAVING
 
 --設問13
 SELECT
-    users.name AS 'ユーザー名',
+    users.name AS 'ユーザー名'
 FROM
     users
 JOIN
@@ -187,7 +189,7 @@ ON
 JOIN
     products
 ON
-    order_items.product_id = products.id
+    order_items.product_id = products.id;
 
 --設問15
 SELECT
@@ -197,7 +199,7 @@ FROM
 JOIN
     order_items
 ON
-    product_id = order_items.product_id
+    products.id = order_items.product_id
 GROUP BY
     products.id, products.product_name
 ORDER BY
@@ -206,7 +208,7 @@ LIMIT 1;
 
 --設問16
 SELECT
-    DATE_FORMAT(order_date, '%Y-%m') AS '月'、
+    DATE_FORMAT(order_date, '%Y-%m') AS '月',
     COUNT(*) AS '注文件数'
 FROM
     orders
@@ -223,12 +225,12 @@ FROM
 LEFT JOIN
     order_items
 ON
-    product.id = order_items.product_id
+    products.id = order_items.product_id
 WHERE
     order_items.id IS NULL;
 
 --設問18
-CREATE INDEX idx_name ON order_items (product_id);
+CREATE INDEX idx_product ON order_items (product_id);
 
 --設問19
 SELECT
@@ -239,7 +241,7 @@ FROM
 JOIN
     orders
 ON
-    users.id = oders.user_id
+    users.id = orders.user_id
 JOIN
     order_items
 ON
@@ -260,7 +262,7 @@ FROM
 JOIN
     orders
 ON 
-    users.id = oders.user_id
+    users.id = orders.user_id
 GROUP BY
     users.id, users.name;
 
@@ -286,7 +288,7 @@ VALUES
 INSERT INTO
     order_items (id, order_id, product_id, quantity)
 VALUES
-    (10, 1, 6, 1);
+    (11, 1, 6, 1);
 
 --設問25
 UPDATE
@@ -304,7 +306,7 @@ SET
 
 --設問27
 UPDATE
-    oders
+    orders
 SET
     order_date = '2024-05-01'
 WHERE
@@ -330,4 +332,5 @@ FROM
     products
 WHERE
     NOT EXISTS (SELECT 1 FROM order_items WHERE order_items.product_id = products.id);
+
 
